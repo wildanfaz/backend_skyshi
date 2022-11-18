@@ -1,3 +1,0 @@
-docker run --name db_skyshi -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=xxxx -e MYSQL_PASSWORD=xxxxx -e MYSQL_DATABASE=todo4 -v ${pwd}/init.sql/:/docker-entrypoint-initdb.d/init.sql -dp 3306:3306 mysql
-
-docker run -e MYSQL_HOST=localhost -e MYSQL_USER=xxxx -e MYSQL_PASSWORD=xxxxx -e MYSQL_DBNAME=todo4 -p 8090:3030 backend_skyshi

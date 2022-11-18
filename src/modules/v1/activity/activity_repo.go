@@ -61,6 +61,11 @@ func (repo *activity_repo) GetOneRepo(id int) (*models.Activity, error) {
 
 func (repo *activity_repo) CreateRepo(body *models.Activity) (*models.Activity, error) {
 	var activity models.Activity
+
+	if body.Email == "" && body.Title == "" {
+		return nil, errors.New("Empty Value")
+	}
+
 	tx, err := repo.db.BeginTx(context.Background(), nil)
 	defer tx.Rollback()
 
@@ -68,7 +73,7 @@ func (repo *activity_repo) CreateRepo(body *models.Activity) (*models.Activity, 
 		return nil, err
 	}
 
-	query := `SELECT id FROM activity WHERE email = ?`
+	query := `SELECT id, email FROM activity WHERE email = ?`
 
 	rows1, err := tx.QueryContext(context.Background(), query, body.Email)
 
@@ -79,8 +84,8 @@ func (repo *activity_repo) CreateRepo(body *models.Activity) (*models.Activity, 
 	}
 
 	for rows1.Next() {
-		rows1.Scan(&activity.Id)
-		if activity.Id != 0 {
+		rows1.Scan(&activity.Id, &activity.Email)
+		if activity.Id != 0 && activity.Email != "" {
 			return nil, errors.New("Email Already Exists")
 		}
 	}

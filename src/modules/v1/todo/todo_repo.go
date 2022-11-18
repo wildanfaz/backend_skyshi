@@ -62,6 +62,10 @@ func (repo *todo_repo) GetOneRepo(id int) (*models.Todo, error) {
 func (repo *todo_repo) CreateRepo(body *models.Todo) (*models.Todo, error) {
 	var todo models.Todo
 
+	if body.Title == "" && body.Activity_group_id == "" && body.Is_Active != true && body.Priority == "" {
+		return nil, errors.New("Empty Value")
+	}
+
 	tx, err := repo.db.BeginTx(context.Background(), nil)
 	defer tx.Rollback()
 
