@@ -1,4 +1,4 @@
-package todo
+package todos
 
 import (
 	"context"
@@ -19,7 +19,7 @@ func NewRepo(db *sql.DB) *todo_repo {
 func (repo *todo_repo) GetAllRepo(act int) (*models.Todos, error) {
 	var todos models.Todos
 
-	query := `SELECT * FROM todo WHERE activity_group_id = ?`
+	query := `SELECT * FROM todos WHERE activity_group_id = ?`
 
 	rows, err := repo.db.QueryContext(context.Background(), query, act)
 
@@ -42,7 +42,7 @@ func (repo *todo_repo) GetAllRepo(act int) (*models.Todos, error) {
 
 func (repo *todo_repo) GetOneRepo(id int) (*models.Todo, error) {
 	var todo models.Todo
-	query := `SELECT * FROM todo WHERE id = ?`
+	query := `SELECT * FROM todos WHERE id = ?`
 
 	rows, err := repo.db.QueryContext(context.Background(), query, id)
 
@@ -73,7 +73,7 @@ func (repo *todo_repo) CreateRepo(body *models.Todo) (*models.Todo, error) {
 		return nil, err
 	}
 
-	query1 := `INSERT INTO todo(activity_group_id, title, is_active, priority) VALUES(?, ?, ?, ?)`
+	query1 := `INSERT INTO todos(activity_group_id, title, is_active, priority) VALUES(?, ?, ?, ?)`
 
 	res, err := tx.ExecContext(context.Background(), query1, body.Activity_group_id, body.Title, body.Is_Active, body.Priority)
 
@@ -83,7 +83,7 @@ func (repo *todo_repo) CreateRepo(body *models.Todo) (*models.Todo, error) {
 		return nil, err
 	}
 
-	query2 := `SELECT * FROM todo WHERE id = ?`
+	query2 := `SELECT * FROM todos WHERE id = ?`
 
 	rows1, err := tx.QueryContext(context.Background(), query2, id)
 
@@ -107,7 +107,7 @@ func (repo *todo_repo) CreateRepo(body *models.Todo) (*models.Todo, error) {
 }
 
 func (repo *todo_repo) DeleteRepo(id int) error {
-	query := `DELETE FROM todo WHERE id = ?`
+	query := `DELETE FROM todos WHERE id = ?`
 
 	res, err := repo.db.ExecContext(context.Background(), query, id)
 
@@ -136,7 +136,7 @@ func (repo *todo_repo) UpdateRepo(id int, body *models.Todo) (*models.Todo, erro
 		return nil, err
 	}
 
-	query1 := "SELECT id FROM todo WHERE id = ?"
+	query1 := "SELECT id FROM todos WHERE id = ?"
 
 	rows1, err := tx.QueryContext(context.Background(), query1, id)
 
@@ -175,7 +175,7 @@ func (repo *todo_repo) UpdateRepo(id int, body *models.Todo) (*models.Todo, erro
 		return nil, errors.New("No Rows Affected")
 	}
 
-	query3 := `SELECT * FROM todo WHERE id = ?`
+	query3 := `SELECT * FROM todos WHERE id = ?`
 
 	rows3, err := tx.QueryContext(context.Background(), query3, id)
 

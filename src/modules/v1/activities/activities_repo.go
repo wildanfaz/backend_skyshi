@@ -1,4 +1,4 @@
-package activity
+package activities
 
 import (
 	"context"
@@ -19,7 +19,7 @@ func NewRepo(db *sql.DB) *activity_repo {
 func (repo *activity_repo) GetAllRepo() (*models.Activities, error) {
 	var activities models.Activities
 
-	query := `SELECT * FROM activity`
+	query := `SELECT * FROM activities`
 
 	rows, err := repo.db.QueryContext(context.Background(), query)
 
@@ -42,7 +42,7 @@ func (repo *activity_repo) GetAllRepo() (*models.Activities, error) {
 
 func (repo *activity_repo) GetOneRepo(id int) (*models.Activity, error) {
 	var activity models.Activity
-	query := `SELECT * FROM activity WHERE id = ?`
+	query := `SELECT * FROM activities WHERE id = ?`
 
 	rows, err := repo.db.QueryContext(context.Background(), query, id)
 
@@ -73,7 +73,7 @@ func (repo *activity_repo) CreateRepo(body *models.Activity) (*models.Activity, 
 		return nil, err
 	}
 
-	query := `SELECT id, email FROM activity WHERE email = ?`
+	query := `SELECT id, email FROM activities WHERE email = ?`
 
 	rows1, err := tx.QueryContext(context.Background(), query, body.Email)
 
@@ -90,7 +90,7 @@ func (repo *activity_repo) CreateRepo(body *models.Activity) (*models.Activity, 
 		}
 	}
 
-	query2 := `INSERT INTO activity(email, title) VALUES(?, ?)`
+	query2 := `INSERT INTO activities(email, title) VALUES(?, ?)`
 
 	res, err := tx.ExecContext(context.Background(), query2, body.Email, body.Title)
 
@@ -100,7 +100,7 @@ func (repo *activity_repo) CreateRepo(body *models.Activity) (*models.Activity, 
 		return nil, err
 	}
 
-	query3 := `SELECT * FROM activity WHERE id = ?`
+	query3 := `SELECT * FROM activities WHERE id = ?`
 
 	rows2, err := tx.QueryContext(context.Background(), query3, id)
 
@@ -124,7 +124,7 @@ func (repo *activity_repo) CreateRepo(body *models.Activity) (*models.Activity, 
 }
 
 func (repo *activity_repo) DeleteRepo(id int) error {
-	query := `DELETE FROM activity WHERE id = ?`
+	query := `DELETE FROM activities WHERE id = ?`
 
 	res, err := repo.db.ExecContext(context.Background(), query, id)
 
@@ -153,7 +153,7 @@ func (repo *activity_repo) UpdateRepo(id int, body *models.Activity) (*models.Ac
 		return nil, err
 	}
 
-	query1 := "SELECT id FROM activity WHERE id = ?"
+	query1 := "SELECT id FROM activities WHERE id = ?"
 
 	rows1, err := tx.QueryContext(context.Background(), query1, id)
 
@@ -169,7 +169,7 @@ func (repo *activity_repo) UpdateRepo(id int, body *models.Activity) (*models.Ac
 		return nil, err
 	}
 
-	query2 := `SELECT id, email FROM activity WHERE email = ?`
+	query2 := `SELECT id, email FROM activities WHERE email = ?`
 
 	rows2, err := tx.QueryContext(context.Background(), query2, body.Email)
 
@@ -207,7 +207,7 @@ func (repo *activity_repo) UpdateRepo(id int, body *models.Activity) (*models.Ac
 		return nil, errors.New("No Rows Affected")
 	}
 
-	query4 := `SELECT * FROM activity WHERE id = ?`
+	query4 := `SELECT * FROM activities WHERE id = ?`
 
 	rows4, err := tx.QueryContext(context.Background(), query4, id)
 

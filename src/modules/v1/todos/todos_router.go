@@ -1,5 +1,4 @@
-package todo
-
+package todos
 import (
 	"database/sql"
 

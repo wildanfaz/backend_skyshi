@@ -25,6 +25,10 @@ func New() (*sql.DB, error) {
 		return nil, errors.New("error connect mysql")
 	}
 
+	if err := MigUp(db); err != nil {
+		return nil, err
+	}
+
 	db.SetMaxIdleConns(20)
 	db.SetMaxOpenConns(200)
 	db.SetConnMaxIdleTime(time.Minute * 10)

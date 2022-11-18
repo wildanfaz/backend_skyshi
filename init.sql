@@ -1,4 +1,4 @@
-CREATE TABLE todo4.activity (
+CREATE TABLE todo4.activities (
 	id BIGINT auto_increment NOT NULL,
 	email varchar(100) NOT NULL,
 	title varchar(100) NOT NULL,
@@ -11,7 +11,7 @@ ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE todo4.todo (
+CREATE TABLE todo4.todos (
 	id BIGINT auto_increment NOT NULL,
 	activity_group_id varchar(100) NOT NULL,
 	title varchar(100) NOT NULL,

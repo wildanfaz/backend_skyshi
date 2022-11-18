@@ -1,4 +1,4 @@
-package todo
+package activities
 
 import (
 	"strconv"
@@ -9,29 +9,21 @@ import (
 	"github.com/wildanfaz/backend_skyshi/src/libs"
 )
 
-type todo_ctrl struct {
-	svc interfaces.TodoService
+type activity_ctrl struct {
+	svc interfaces.ActivityService
 }
 
-func NewCtrl(svc interfaces.TodoService) *todo_ctrl {
-	return &todo_ctrl{svc}
+func NewCtrl(svc interfaces.ActivityService) *activity_ctrl {
+	return &activity_ctrl{svc}
 }
 
-func (ctrl *todo_ctrl) GetAll(c echo.Context) error {
-	qp := c.QueryParam("activity_group_id")
-
-	id, err := strconv.Atoi(qp)
-
-	if err != nil {
-		id = 0
-	}
-
-	res := ctrl.svc.GetAll(id)
+func (ctrl *activity_ctrl) GetAll(c echo.Context) error {
+	res := ctrl.svc.GetAll()
 
 	return res.Send(c)
 }
 
-func (ctrl *todo_ctrl) GetOne(c echo.Context) error {
+func (ctrl *activity_ctrl) GetOne(c echo.Context) error {
 	param := c.Param("id")
 
 	id, err := strconv.Atoi(param)
@@ -45,19 +37,19 @@ func (ctrl *todo_ctrl) GetOne(c echo.Context) error {
 	return res.Send(c)
 }
 
-func (ctrl *todo_ctrl) Create(c echo.Context) error {
-	var todo models.Todo
+func (ctrl *activity_ctrl) Create(c echo.Context) error {
+	var activity models.Activity
 
-	if err := c.Bind(&todo); err != nil {
+	if err := c.Bind(&activity); err != nil {
 		libs.Response(null, "Bad Request", err.Error(), 400).Send(c)
 	}
 
-	res := ctrl.svc.Create(&todo)
+	res := ctrl.svc.Create(&activity)
 
 	return res.Send(c)
 }
 
-func (ctrl *todo_ctrl) Delete(c echo.Context) error {
+func (ctrl *activity_ctrl) Delete(c echo.Context) error {
 	param := c.Param("id")
 
 	id, err := strconv.Atoi(param)
@@ -71,9 +63,9 @@ func (ctrl *todo_ctrl) Delete(c echo.Context) error {
 	return res.Send(c)
 }
 
-func (ctrl *todo_ctrl) Update(c echo.Context) error {
-	var todo models.Todo
-	if err := c.Bind(&todo); err != nil {
+func (ctrl *activity_ctrl) Update(c echo.Context) error {
+	var activity models.Activity
+	if err := c.Bind(&activity); err != nil {
 		libs.Response(null, "Bad Request", err.Error(), 400).Send(c)
 	}
 	param := c.Param("id")
@@ -84,7 +76,7 @@ func (ctrl *todo_ctrl) Update(c echo.Context) error {
 		id = 0
 	}
 
-	res := ctrl.svc.Update(id, &todo)
+	res := ctrl.svc.Update(id, &activity)
 
 	return res.Send(c)
 }
