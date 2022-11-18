@@ -30,14 +30,20 @@ go run main.go
 docker pull muhamadwildanfaz/backend_skyshi:v1
 ```
 
-### 2. MySQL
+### 1. Create Network
+
+```bash
+docker network create skyshi
+```
+
+### 3. MySQL
 
 Powershell
 ```bash
-docker run --name db_skyshi -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=xxxx -e MYSQL_PASSWORD=xxxxx -e MYSQL_DATABASE=todo4 -v ${pwd}/init.sql/:/docker-entrypoint-initdb.d/init.sql -dp 3306:3306 mysql
+docker run --network=skyshi --name db_skyshi -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=xxxx -e MYSQL_PASSWORD=xxxxx -e MYSQL_DATABASE=todo4 -v ${pwd}/init.sql/:/docker-entrypoint-initdb.d/init.sql -dp 3306:3306 mysql
 ```
 
-### 3. Run Image
+### 4. Run Image
 ```bash
-docker run -e MYSQL_HOST=localhost -e MYSQL_USER=xxxx -e MYSQL_PASSWORD=xxxxx -e MYSQL_DBNAME=todo4 -e MYSQL_PORT=3306 -p 8090:3030 muhamadwildanfaz/backend_skyshi:v1
+docker run --network=skyshi -e MYSQL_HOST=db_skyshi -e MYSQL_USER=xxxx -e MYSQL_PASSWORD=xxxxx -e MYSQL_DBNAME=todo4 -e MYSQL_PORT=3306 -p 8090:3030 muhamadwildanfaz/backend_skyshi:v1
 ```
