@@ -30,7 +30,7 @@ go run main.go
 docker pull muhamadwildanfaz/backend_skyshi:v1
 ```
 
-### 1. Create Network
+### 2. Create Network
 
 ```bash
 docker network create skyshi
