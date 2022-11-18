@@ -45,5 +45,5 @@ docker run --network=skyshi --name db_skyshi -e MYSQL_ROOT_PASSWORD=root -e MYSQ
 
 ### 4. Run Image
 ```bash
-docker run --network=skyshi -e MYSQL_HOST=db_skyshi -e MYSQL_USER=xxxx -e MYSQL_PASSWORD=xxxxx -e MYSQL_DBNAME=todo4 -e MYSQL_PORT=3306 -p 8090:3030 muhamadwildanfaz/backend_skyshi:v1
+docker run --network=skyshi --name backend_skyshi -e MYSQL_HOST=db_skyshi -e MYSQL_USER=xxxx -e MYSQL_PASSWORD=xxxxx -e MYSQL_DBNAME=todo4 -e MYSQL_PORT=3306 -p 8090:3030 muhamadwildanfaz/backend_skyshi:v1
 ```
