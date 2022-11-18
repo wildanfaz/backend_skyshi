@@ -6,7 +6,16 @@ import (
 )
 
 func MigUp(db *sql.DB) error {
-	query := `CREATE TABLE todo4.activities (
+	tx, err := db.BeginTx(context.Background(), nil)
+
+	defer tx.Rollback()
+
+	if err != nil {
+		return err
+	}
+
+	query1 := `
+	CREATE TABLE IF NOT EXISTS todo4.activities (
 		id BIGINT auto_increment NOT NULL,
 		email varchar(100) NOT NULL,
 		title varchar(100) NOT NULL,
@@ -17,9 +26,14 @@ func MigUp(db *sql.DB) error {
 	)
 	ENGINE=InnoDB
 	DEFAULT CHARSET=utf8mb4
-	COLLATE=utf8mb4_0900_ai_ci;
-	
-	CREATE TABLE todo4.todos (
+	COLLATE=utf8mb4_0900_ai_ci;`
+
+	if _, err := tx.ExecContext(context.Background(), query1); err != nil {
+		return err
+	}
+
+	query2 := `
+	CREATE TABLE IF NOT EXISTS todo4.todos (
 		id BIGINT auto_increment NOT NULL,
 		activity_group_id varchar(100) NOT NULL,
 		title varchar(100) NOT NULL,
@@ -34,9 +48,11 @@ func MigUp(db *sql.DB) error {
 	DEFAULT CHARSET=utf8mb4
 	COLLATE=utf8mb4_0900_ai_ci;`
 
-	if _, err := db.ExecContext(context.Background(), query); err != nil {
+	if _, err := tx.ExecContext(context.Background(), query2); err != nil {
 		return err
 	}
+
+	tx.Commit()
 
 	return nil
 }
