@@ -46,13 +46,24 @@ func (svc *todo_service) GetOne(id int) *libs.Resp {
 func (svc *todo_service) Create(body *models.Todo) *libs.Resp {
 	data, err := svc.repo.CreateRepo(body)
 
+	var result models.CreateTodo
+	if data != nil {
+		result.Created_at = data.Created_at
+		result.Updated_at = data.Updated_at
+		result.Id = data.Id
+		result.Title = data.Title
+		result.Activity_group_id = data.Activity_group_id
+		result.Is_Active = data.Is_Active
+		result.Priority = data.Priority
+	}
+
 	if err != nil {
 		return libs.Response(null, "Bad Request", err.Error(), 400)
 	} else if data.Id == 0 {
 		return libs.Response(null, "Not Found", "Data Not Found", 404)
 	}
 
-	return libs.Response(data, "Success", "Success", 201)
+	return libs.Response(result, "Success", "Success", 201)
 }
 
 func (svc *todo_service) Delete(id int) *libs.Resp {
