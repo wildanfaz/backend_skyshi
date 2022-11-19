@@ -35,7 +35,7 @@ func (svc *todo_service) GetOne(id int) *libs.Resp {
 	data, err := svc.repo.GetOneRepo(id)
 
 	if err != nil {
-		return libs.Response(null, "Bad Request", err.Error(), 400)
+		return libs.Response(null, "Bad Request", err.Error(), 200)
 	} else if data.Id == 0 {
 		return libs.Response([]string{}, "Not Found", fmt.Sprintf("Todo with ID %d Not Found", id), 404)
 	}

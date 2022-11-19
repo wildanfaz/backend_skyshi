@@ -42,7 +42,7 @@ func (repo *todo_repo) GetAllRepo(act int) (*models.Todos, error) {
 
 func (repo *todo_repo) GetOneRepo(id int) (*models.Todo, error) {
 	var todo models.Todo
-	query := `SELECT id, activity_group_id, title, is_active, priority, created_at, updated_at, deleted_at FROM todos WHERE id = ?`
+	query := `SELECT * FROM todos WHERE id = ?`
 
 	rows, err := repo.db.QueryContext(context.Background(), query, id)
 
@@ -157,7 +157,7 @@ func (repo *todo_repo) UpdateRepo(id int, body *models.Todo) (*models.Todo, erro
 	query2 := `
 	UPDATE todos
 	SET 
-	title = ?
+	title = COALESCE(nullif(?, ''), title)
 	WHERE id = ?`
 
 	if _, err := tx.ExecContext(context.Background(), query2, body.Title, id); err != nil {
