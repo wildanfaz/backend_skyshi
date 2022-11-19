@@ -18,5 +18,5 @@ func New(e *echo.Echo, db *sql.DB) {
 
 	e.DELETE("/activity-groups/:id", ctrl.Delete)
 
-	e.PATCH("activity-groups/:id", ctrl.Update)
+	e.PATCH("/activity-groups/:id", ctrl.Update)
 }

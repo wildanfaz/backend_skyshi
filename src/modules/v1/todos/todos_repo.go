@@ -42,7 +42,7 @@ func (repo *todo_repo) GetAllRepo(act int) (*models.Todos, error) {
 
 func (repo *todo_repo) GetOneRepo(id int) (*models.Todo, error) {
 	var todo models.Todo
-	query := `SELECT * FROM todos WHERE id = ?`
+	query := `SELECT id, activity_group_id, title, is_active, priority, created_at, updated_at, deleted_at FROM todos WHERE id = ?`
 
 	rows, err := repo.db.QueryContext(context.Background(), query, id)
 
@@ -62,8 +62,10 @@ func (repo *todo_repo) GetOneRepo(id int) (*models.Todo, error) {
 func (repo *todo_repo) CreateRepo(body *models.Todo) (*models.Todo, error) {
 	var todo models.Todo
 
-	if body.Title == "" && body.Activity_group_id == "" && body.Is_Active != true && body.Priority == "" {
-		return nil, errors.New("Empty Value")
+	if body.Title == "" {
+		return nil, errors.New("title cannot be null")
+	} else if body.Activity_group_id == 0 {
+		return nil, errors.New("activity_group_id cannot be null")
 	}
 
 	tx, err := repo.db.BeginTx(context.Background(), nil)
@@ -73,9 +75,9 @@ func (repo *todo_repo) CreateRepo(body *models.Todo) (*models.Todo, error) {
 		return nil, err
 	}
 
-	query1 := `INSERT INTO todos(activity_group_id, title, is_active, priority) VALUES(?, ?, ?, ?)`
+	query2 := `INSERT INTO todos(activity_group_id, title, is_active, priority) VALUES(?, ?, ?, ?)`
 
-	res, err := tx.ExecContext(context.Background(), query1, body.Activity_group_id, body.Title, body.Is_Active, body.Priority)
+	res, err := tx.ExecContext(context.Background(), query2, body.Activity_group_id, body.Title, true, "very-high")
 
 	id, err := res.LastInsertId()
 
@@ -83,18 +85,18 @@ func (repo *todo_repo) CreateRepo(body *models.Todo) (*models.Todo, error) {
 		return nil, err
 	}
 
-	query2 := `SELECT * FROM todos WHERE id = ?`
+	query3 := `SELECT * FROM todos WHERE id = ?`
 
-	rows1, err := tx.QueryContext(context.Background(), query2, id)
+	rows2, err := tx.QueryContext(context.Background(), query3, id)
 
-	defer rows1.Close()
+	defer rows2.Close()
 
 	if err != nil {
 		return nil, err
 	}
 
-	for rows1.Next() {
-		rows1.Scan(&todo.Id, &todo.Activity_group_id, &todo.Title, &todo.Is_Active, &todo.Priority, &todo.Created_at, &todo.Updated_at, &todo.Deleted_at)
+	for rows2.Next() {
+		rows2.Scan(&todo.Id, &todo.Activity_group_id, &todo.Title, &todo.Is_Active, &todo.Priority, &todo.Created_at, &todo.Updated_at, &todo.Deleted_at)
 	}
 
 	if err != nil {
@@ -153,26 +155,13 @@ func (repo *todo_repo) UpdateRepo(id int, body *models.Todo) (*models.Todo, erro
 	}
 
 	query2 := `
-	UPDATE todo 
+	UPDATE todos
 	SET 
-	activity_group_id = COALESCE(nullif(?, ''), activity_group_id),
-	title = COALESCE(nullif(?, ''), title),
-	is_active = COALESCE(nullif(?, ''), is_active),
-	priority = COALESCE(nullif(?, ''), priority)
+	title = ?
 	WHERE id = ?`
 
-	res2, err := tx.ExecContext(context.Background(), query2, body.Activity_group_id, body.Title, body.Is_Active, body.Priority, id)
-
-	if err != nil {
+	if _, err := tx.ExecContext(context.Background(), query2, body.Title, id); err != nil {
 		return nil, err
-	}
-
-	rows2, err := res2.RowsAffected()
-
-	if err != nil {
-		return nil, err
-	} else if rows2 == 0 {
-		return nil, errors.New("No Rows Affected")
 	}
 
 	query3 := `SELECT * FROM todos WHERE id = ?`

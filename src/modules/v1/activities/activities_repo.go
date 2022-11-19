@@ -62,6 +62,10 @@ func (repo *activity_repo) GetOneRepo(id int) (*models.Activity, error) {
 func (repo *activity_repo) CreateRepo(body *models.Activity) (*models.Activity, error) {
 	var activity models.Activity
 
+	if body.Title == "" {
+		return nil, errors.New("title cannot be null")
+	}
+
 	if body.Email == "" && body.Title == "" {
 		return nil, errors.New("Empty Value")
 	}
@@ -187,7 +191,7 @@ func (repo *activity_repo) UpdateRepo(id int, body *models.Activity) (*models.Ac
 	}
 
 	query3 := `
-	UPDATE activity 
+	UPDATE activities 
 	SET 
 	email = COALESCE(nullif(?, ''), email),
 	title = COALESCE(nullif(?, ''), title)

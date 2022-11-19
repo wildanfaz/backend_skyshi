@@ -5,54 +5,46 @@ import (
 	"database/sql"
 )
 
-func MigUp(db *sql.DB) error {
-	tx, err := db.BeginTx(context.Background(), nil)
-
-	defer tx.Rollback()
-
-	if err != nil {
-		return err
-	}
-
-	query1 := `
-	CREATE TABLE IF NOT EXISTS todo4.activities (
+func Activities(db *sql.DB) error {
+	query := `
+	CREATE TABLE IF NOT EXISTS activities (
 		id BIGINT auto_increment NOT NULL,
 		email varchar(100) NOT NULL,
 		title varchar(100) NOT NULL,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
 		deleted_at TIMESTAMP NULL,
-		CONSTRAINT activity_PK PRIMARY KEY (id)
+		CONSTRAINT activities_PK PRIMARY KEY (id)
 	)
 	ENGINE=InnoDB
-	DEFAULT CHARSET=utf8mb4
-	COLLATE=utf8mb4_0900_ai_ci;`
+	`
 
-	if _, err := tx.ExecContext(context.Background(), query1); err != nil {
+	if _, err := db.ExecContext(context.Background(), query); err != nil {
 		return err
 	}
 
-	query2 := `
-	CREATE TABLE IF NOT EXISTS todo4.todos (
+	return nil
+}
+
+func Todos(db *sql.DB) error {
+	query := `
+	CREATE TABLE IF NOT EXISTS todos (
 		id BIGINT auto_increment NOT NULL,
-		activity_group_id varchar(100) NOT NULL,
-		title varchar(100) NOT NULL,
-		is_active varchar(100) NOT NULL,
+		activity_group_id integer NOT NULL,
+		title varchar(100) NULL,
+		is_active bool NULL,
 		priority varchar(100) NOT NULL,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
 		deleted_at TIMESTAMP NULL,
-		CONSTRAINT todo_PK PRIMARY KEY (id)
+		CONSTRAINT todos_PK PRIMARY KEY (id)
 	)
 	ENGINE=InnoDB
-	DEFAULT CHARSET=utf8mb4
-	COLLATE=utf8mb4_0900_ai_ci;`
+	`
 
-	if _, err := tx.ExecContext(context.Background(), query2); err != nil {
+	if _, err := db.ExecContext(context.Background(), query); err != nil {
 		return err
 	}
-
-	tx.Commit()
 
 	return nil
 }

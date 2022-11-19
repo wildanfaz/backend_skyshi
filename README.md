@@ -40,7 +40,7 @@ docker network create skyshi
 
 Powershell
 ```bash
-docker run --network skyshi --name db_skyshi -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=xxxx -e MYSQL_PASSWORD=xxxxx -e MYSQL_DATABASE=todo4 -v ${pwd}/init.sql/:/docker-entrypoint-initdb.d/init.sql -dp 3306:3306 mysql
+docker run --network skyshi --name db_skyshi -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=xxxx -e MYSQL_PASSWORD=xxxxx -e MYSQL_DATABASE=todo4 -dp 3306:3306 mysql
 ```
 
 ### 4. Run Image

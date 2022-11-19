@@ -25,12 +25,16 @@ func New() (*sql.DB, error) {
 		return nil, errors.New("error connect mysql")
 	}
 
-	db.SetMaxIdleConns(20)
-	db.SetMaxOpenConns(200)
-	db.SetConnMaxIdleTime(time.Minute * 10)
-	db.SetConnMaxLifetime(time.Minute * 100)
+	db.SetMaxIdleConns(500)
+	db.SetMaxOpenConns(1000)
+	db.SetConnMaxIdleTime(time.Minute * 2)
+	db.SetConnMaxLifetime(time.Minute * 4)
 
-	if err := MigUp(db); err != nil {
+	if err := Activities(db); err != nil {
+		return nil, err
+	}
+
+	if err := Todos(db); err != nil {
 		return nil, err
 	}
 

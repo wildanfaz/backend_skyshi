@@ -1,4 +1,4 @@
-CREATE TABLE todo4.activities (
+CREATE TABLE IF NOT EXISTS activities (
 	id BIGINT auto_increment NOT NULL,
 	email varchar(100) NOT NULL,
 	title varchar(100) NOT NULL,
@@ -11,7 +11,7 @@ ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE todo4.todos (
+CREATE TABLE IF NOT EXISTS todos (
 	id BIGINT auto_increment NOT NULL,
 	activity_group_id varchar(100) NOT NULL,
 	title varchar(100) NOT NULL,
@@ -25,3 +25,16 @@ CREATE TABLE todo4.todos (
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE todos
+ADD IF NOT EXISTS
+	id BIGINT auto_increment NOT NULL,
+	activity_group_id varchar(100) NOT NULL,
+	title varchar(100) NOT NULL,
+	is_active varchar(100) NOT NULL,
+	priority varchar(100) NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+	deleted_at TIMESTAMP NULL,
+	CONSTRAINT todo_PK PRIMARY KEY (id)
+ENGINE=InnoDB

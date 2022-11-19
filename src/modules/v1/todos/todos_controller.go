@@ -49,7 +49,7 @@ func (ctrl *todo_ctrl) Create(c echo.Context) error {
 	var todo models.Todo
 
 	if err := c.Bind(&todo); err != nil {
-		libs.Response(null, "Bad Request", err.Error(), 400).Send(c)
+		libs.Response(null, "Bad Request", err.Error(), 408).Send(c)
 	}
 
 	res := ctrl.svc.Create(&todo)
@@ -74,7 +74,7 @@ func (ctrl *todo_ctrl) Delete(c echo.Context) error {
 func (ctrl *todo_ctrl) Update(c echo.Context) error {
 	var todo models.Todo
 	if err := c.Bind(&todo); err != nil {
-		libs.Response(null, "Bad Request", err.Error(), 400).Send(c)
+		libs.Response(null, "Bad Request", err.Error(), 408).Send(c)
 	}
 	param := c.Param("id")
 
