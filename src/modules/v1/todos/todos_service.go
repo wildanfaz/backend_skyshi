@@ -35,7 +35,7 @@ func (svc *todo_service) GetOne(id int) *libs.Resp {
 	data, err := svc.repo.GetOneRepo(id)
 
 	if err != nil {
-		return libs.Response(null, "Bad Request", err.Error(), 400)
+		return libs.Response(null, "Bad Request", err.Error(), 200)
 	} else if data.Id == 0 {
 		return libs.Response([]string{}, "Not Found", fmt.Sprintf("Todo with ID %d Not Found", id), 404)
 	}
@@ -84,7 +84,7 @@ func (svc *todo_service) Update(id int, body *models.Todo) *libs.Resp {
 	if err != nil && err.Error() == "Not Found" {
 		return libs.Response(null, "Not Found", fmt.Sprintf("Todo with ID %d Not Found", id), 404)
 	} else if err != nil {
-		return libs.Response(null, "Bad Request", err.Error(), 400)
+		return libs.Response(null, "Bad Request", err.Error(), 408)
 	}
 
 	return libs.Response(data, "Success", "Success", 200)
